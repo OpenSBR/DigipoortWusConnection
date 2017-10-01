@@ -1,0 +1,732 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema xmlns:tns="http://logius.nl/digipoort/koppelvlakservices/1.2/" elementFormDefault="qualified" targetNamespace="http://logius.nl/digipoort/koppelvlakservices/1.2/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <xsd:element name="aanleverRequest">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element minOccurs="0" name="kenmerk" type="tns:kenmerkType" />
+        <xsd:element name="berichtsoort" type="tns:berichtsoortType" />
+        <xsd:element minOccurs="0" name="aanleverkenmerk" type="tns:aanleverkenmerkType" />
+        <xsd:element minOccurs="0" name="eerderAanleverkenmerk" type="tns:aanleverkenmerkType" />
+        <xsd:element name="identiteitBelanghebbende" type="tns:identiteitType" />
+        <xsd:element name="rolBelanghebbende" type="tns:rolType" />
+        <xsd:element minOccurs="0" name="identiteitOntvanger" type="tns:identiteitType" />
+        <xsd:element minOccurs="0" name="rolOntvanger" type="tns:rolType" />
+        <xsd:element name="berichtInhoud" type="tns:berichtInhoudType" />
+        <xsd:element minOccurs="0" name="berichtBijlagen" type="tns:berichtBijlagenType" />
+        <xsd:element minOccurs="0" name="autorisatieAdres" type="tns:autorisatieAdresType" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="aanleverResponse">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="kenmerk" type="tns:kenmerkType" />
+        <xsd:element name="berichtsoort" type="tns:berichtsoortType" />
+        <xsd:element minOccurs="0" name="aanleverkenmerk" type="tns:aanleverkenmerkType" />
+        <xsd:element minOccurs="0" name="eerderAanleverkenmerk" type="tns:aanleverkenmerkType" />
+        <xsd:element name="tijdstempelAangeleverd" type="xsd:dateTime" />
+        <xsd:element name="identiteitBelanghebbende" type="tns:identiteitType" />
+        <xsd:element name="rolBelanghebbende" type="tns:rolType" />
+        <xsd:element minOccurs="0" name="identiteitOntvanger" type="tns:identiteitType" />
+        <xsd:element minOccurs="0" name="rolOntvanger" type="tns:rolType" />
+        <xsd:element minOccurs="0" name="autorisatieAdres" type="tns:autorisatieAdresType" />
+        <xsd:element minOccurs="0" name="statuscode" type="tns:statuscodeType" />
+        <xsd:element minOccurs="0" name="tijdstempelStatus" type="xsd:dateTime" />
+        <xsd:element minOccurs="0" name="statusomschrijving" type="tns:statusomschrijvingType" />
+        <xsd:element minOccurs="0" name="statusFoutcode" type="tns:foutType" />
+        <xsd:element minOccurs="0" name="statusdetails" type="tns:statusdetailsType" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="aanleverFault" type="tns:foutType" />
+  <xsd:element name="getBerichtsoortenRequest">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="identiteitBelanghebbende" type="tns:identiteitType" />
+        <xsd:element minOccurs="0" name="autorisatieAdres" type="tns:autorisatieAdresType" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="getBerichtsoortenResponse">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="getBerichtsoortenReturn" type="tns:ArrayOfBerichtsoortResultaat" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="getProcessenRequest">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="berichtsoort" type="tns:berichtsoortType" />
+        <xsd:element name="identiteitBelanghebbende" type="tns:identiteitType" />
+        <xsd:element minOccurs="0" name="autorisatieAdres" type="tns:autorisatieAdresType" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="getProcessenResponse">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="getProcessenReturn" type="tns:ArrayOfProcesResultaat" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="getStatussenProcesRequest">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="kenmerk" type="tns:kenmerkType" />
+        <xsd:element minOccurs="0" name="autorisatieAdres" type="tns:autorisatieAdresType" />
+        <xsd:element minOccurs="0" name="tijdstempelVanaf" type="xsd:dateTime" />
+        <xsd:element minOccurs="0" name="tijdstempelTot" type="xsd:dateTime" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="getStatussenProcesResponse">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="getStatussenProcesReturn" type="tns:ArrayOfStatusResultaat" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="getNieuweStatussenProcesRequest">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="kenmerk" type="tns:kenmerkType" />
+        <xsd:element minOccurs="0" name="autorisatieAdres" type="tns:autorisatieAdresType" />
+        <xsd:element minOccurs="0" name="tijdstempelVanaf" type="xsd:dateTime" />
+        <xsd:element minOccurs="0" name="tijdstempelTot" type="xsd:dateTime" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="getNieuweStatussenProcesResponse">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="getNieuweStatussenProcesReturn" type="tns:ArrayOfStatusResultaat" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="getNieuweStatussenRequest">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="berichtsoort" type="tns:berichtsoortType" />
+        <xsd:element name="identiteitBelanghebbende" type="tns:identiteitType" />
+        <xsd:element minOccurs="0" name="autorisatieAdres" type="tns:autorisatieAdresType" />
+        <xsd:element minOccurs="0" name="tijdstempelVanaf" type="xsd:dateTime" />
+        <xsd:element minOccurs="0" name="tijdstempelTot" type="xsd:dateTime" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="getNieuweStatussenResponse">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="getNieuweStatussenReturn" type="tns:ArrayOfStatusResultaat" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="getBerichtenRequest">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element minOccurs="0" name="berichtsoort" type="tns:berichtsoortType" />
+        <xsd:element name="identiteitBelanghebbende" type="tns:identiteitType" />
+        <xsd:element minOccurs="0" name="autorisatieAdres" type="tns:autorisatieAdresType" />
+        <xsd:element minOccurs="0" name="tijdstempelVanaf" type="xsd:dateTime" />
+        <xsd:element minOccurs="0" name="tijdstempelTot" type="xsd:dateTime" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="getBerichtenResponse">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="getBerichtenReturn" type="tns:ArrayOfBerichtResultaat" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="getNieuweBerichtenRequest">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element minOccurs="0" name="berichtsoort" type="tns:berichtsoortType" />
+        <xsd:element name="identiteitBelanghebbende" type="tns:identiteitType" />
+        <xsd:element minOccurs="0" name="autorisatieAdres" type="tns:autorisatieAdresType" />
+        <xsd:element minOccurs="0" name="tijdstempelVanaf" type="xsd:dateTime" />
+        <xsd:element minOccurs="0" name="tijdstempelTot" type="xsd:dateTime" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="getNieuweBerichtenResponse">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="getNieuweBerichtenReturn" type="tns:ArrayOfBerichtResultaat" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="getBerichtenLijstRequest">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element minOccurs="0" name="berichtsoort" type="tns:berichtsoortType" />
+        <xsd:element minOccurs="0" name="autorisatieAdres" type="tns:autorisatieAdresType" />
+        <xsd:element minOccurs="0" name="tijdstempelVanaf" type="xsd:dateTime" />
+        <xsd:element minOccurs="0" name="tijdstempelTot" type="xsd:dateTime" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="getBerichtenLijstResponse">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="getBerichtenLijstReturn" type="tns:ArrayOfBerichtLijstResultaat" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="getNieuweBerichtenLijstRequest">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element minOccurs="0" name="berichtsoort" type="tns:berichtsoortType" />
+        <xsd:element minOccurs="0" name="autorisatieAdres" type="tns:autorisatieAdresType" />
+        <xsd:element minOccurs="0" name="tijdstempelVanaf" type="xsd:dateTime" />
+        <xsd:element minOccurs="0" name="tijdstempelTot" type="xsd:dateTime" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="getNieuweBerichtenLijstResponse">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="getNieuweBerichtenLijstReturn" type="tns:ArrayOfBerichtLijstResultaat" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="getBerichtenKenmerkRequest">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="kenmerk" type="tns:kenmerkType" />
+        <xsd:element minOccurs="0" name="autorisatieAdres" type="tns:autorisatieAdresType" />
+        <xsd:element minOccurs="0" name="tijdstempelVanaf" type="xsd:dateTime" />
+        <xsd:element minOccurs="0" name="tijdstempelTot" type="xsd:dateTime" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="getBerichtenKenmerkResponse">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="getBerichtenKenmerkReturn" type="tns:ArrayOfBerichtResultaat" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="getNieuweBerichtenKenmerkRequest">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="kenmerk" type="tns:kenmerkType" />
+        <xsd:element minOccurs="0" name="autorisatieAdres" type="tns:autorisatieAdresType" />
+        <xsd:element minOccurs="0" name="tijdstempelVanaf" type="xsd:dateTime" />
+        <xsd:element minOccurs="0" name="tijdstempelTot" type="xsd:dateTime" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="getNieuweBerichtenKenmerkResponse">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="getNieuweBerichtenKenmerkReturn" type="tns:ArrayOfBerichtResultaat" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="afleverRequest">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="kenmerk" type="tns:kenmerkType" />
+        <xsd:element name="berichtsoort" type="tns:berichtsoortType" />
+        <xsd:element name="berichtkenmerk" type="tns:berichtkenmerkType" />
+        <xsd:element minOccurs="0" name="aanleverkenmerk" type="tns:aanleverkenmerkType" />
+        <xsd:element name="tijdstempelAangeleverd" type="xsd:dateTime" />
+        <xsd:element name="identiteitBelanghebbende" type="tns:identiteitType" />
+        <xsd:element name="rolBelanghebbende" type="tns:rolType" />
+        <xsd:element minOccurs="0" name="identiteitAanleveraar" type="tns:identiteitsnummerType" />
+        <xsd:element minOccurs="0" name="identiteitOntvanger" type="tns:identiteitType" />
+        <xsd:element minOccurs="0" name="rolOntvanger" type="tns:rolType" />
+        <xsd:element name="berichtInhoud" type="tns:berichtInhoudType" />
+        <xsd:element minOccurs="0" name="berichtBijlagen" type="tns:berichtBijlagenType" />
+        <xsd:element minOccurs="0" name="constateringenLijst" type="tns:constateringenLijstType" />
+        <xsd:element minOccurs="0" name="additioneleElementenLijst" type="tns:additioneleElementenLijstType" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="afleverResponse">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="kenmerk" type="tns:kenmerkType" />
+        <xsd:element minOccurs="0" name="berichtsoort" type="tns:berichtsoortType" />
+        <xsd:element name="berichtkenmerk" type="tns:berichtkenmerkType" />
+        <xsd:element name="tijdstempelAfgeleverd" type="xsd:dateTime" />
+        <xsd:element minOccurs="0" name="statuscode" type="tns:statuscodeType" />
+        <xsd:element minOccurs="0" name="tijdstempelStatus" type="xsd:dateTime" />
+        <xsd:element minOccurs="0" name="statusomschrijving" type="tns:statusomschrijvingType" />
+        <xsd:element minOccurs="0" name="statusFoutcode" type="tns:foutType" />
+        <xsd:element minOccurs="0" name="statusdetails" type="tns:statusdetailsType" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="afleverFault" type="tns:foutType" />
+  <xsd:element name="zetStatusRequest">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="kenmerk" type="tns:kenmerkType" />
+        <xsd:element minOccurs="0" name="berichtkenmerk" type="tns:berichtkenmerkType" />
+        <xsd:element name="statuscode" type="tns:statuscodeType" />
+        <xsd:element name="tijdstempelStatus" type="xsd:dateTime" />
+        <xsd:element minOccurs="0" name="statusFoutcode" type="tns:foutType" />
+        <xsd:element minOccurs="0" name="statusdetails" type="tns:statusdetailsType" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="zetStatusResponse">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="kenmerk" type="tns:kenmerkType" />
+        <xsd:element name="statuscode" type="tns:statuscodeType" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="zetStatusFault" type="tns:foutType" />
+  <xsd:complexType name="ProcesResultaat">
+    <xsd:sequence>
+      <xsd:element name="kenmerk" type="tns:kenmerkType" />
+      <xsd:element name="berichtsoort" type="tns:berichtsoortType" />
+      <xsd:element name="identiteitBelanghebbende" type="tns:identiteitType" />
+      <xsd:element minOccurs="0" name="identiteitOntvanger" type="tns:identiteitType" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ArrayOfProcesResultaat">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" maxOccurs="unbounded" name="ProcesResultaat" type="tns:ProcesResultaat" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ArrayOfBerichtsoortResultaat">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" maxOccurs="unbounded" name="berichtsoort" type="tns:berichtsoortType" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="StatusResultaat">
+    <xsd:sequence>
+      <xsd:element name="kenmerk" type="tns:kenmerkType" />
+      <xsd:element name="identiteitBelanghebbende" type="tns:identiteitType" />
+      <xsd:element name="statuscode" type="tns:statuscodeType" />
+      <xsd:element name="tijdstempelStatus" type="xsd:dateTime" />
+      <xsd:element name="statusomschrijving" type="tns:statusomschrijvingType" />
+      <xsd:element minOccurs="0" name="statusFoutcode" type="tns:foutType" />
+      <xsd:element minOccurs="0" name="statusdetails" type="tns:statusdetailsType" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ArrayOfStatusResultaat">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" maxOccurs="unbounded" name="StatusResultaat" type="tns:StatusResultaat" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="statusinformatieFault" type="tns:foutType" />
+  <xsd:complexType name="BerichtResultaat">
+    <xsd:sequence>
+      <xsd:element name="kenmerk" type="tns:kenmerkType" />
+      <xsd:element name="berichtsoort" type="tns:berichtsoortType" />
+      <xsd:element name="berichtkenmerk" type="tns:berichtkenmerkType" />
+      <xsd:element minOccurs="0" name="aanleverkenmerk" type="tns:aanleverkenmerkType" />
+      <xsd:element minOccurs="0" name="eerderAanleverkenmerk" type="tns:aanleverkenmerkType" />
+      <xsd:element name="tijdstempelAangeleverd" type="xsd:dateTime" />
+      <xsd:element name="identiteitBelanghebbende" type="tns:identiteitType" />
+      <xsd:element name="rolBelanghebbende" type="tns:rolType" />
+      <xsd:element minOccurs="0" name="identiteitAanleveraar" type="tns:identiteitsnummerType" />
+      <xsd:element minOccurs="0" name="identiteitOntvanger" type="tns:identiteitType" />
+      <xsd:element minOccurs="0" name="rolOntvanger" type="tns:rolType" />
+      <xsd:element name="berichtInhoud" type="tns:berichtInhoudType" />
+      <xsd:element minOccurs="0" name="berichtBijlagen" type="tns:berichtBijlagenType" />
+      <xsd:element minOccurs="0" name="constateringenLijst" type="tns:constateringenLijstType" />
+      <xsd:element minOccurs="0" name="additioneleElementenLijst" type="tns:additioneleElementenLijstType" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ArrayOfBerichtResultaat">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" maxOccurs="unbounded" name="BerichtResultaat" type="tns:BerichtResultaat" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="BerichtLijstResultaat">
+    <xsd:sequence>
+      <xsd:element name="berichtsoort" type="tns:berichtsoortType" />
+      <xsd:element name="identiteitBelanghebbende" type="tns:identiteitType" />
+      <xsd:element name="kenmerk" type="tns:kenmerkType" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="ArrayOfBerichtLijstResultaat">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" maxOccurs="unbounded" name="BerichtLijstResultaat" type="tns:BerichtLijstResultaat" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="ophaalFault" type="tns:foutType" />
+  <xsd:simpleType name="berichtkenmerkType">
+    <xsd:annotation>
+      <xsd:documentation>
+						Element				:	berichtkenmerkType
+						Type						:	Tekst
+						Maximale lengte	:	256
+						Beschrijving			:	Het unieke kenmerk (message ID) van het aanleververzoek dat geleid heeft tot het initiëren van het verwerkingsproces.
+					</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:normalizedString">
+      <xsd:whiteSpace value="collapse" />
+      <xsd:maxLength value="256" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="kenmerkType">
+    <xsd:annotation>
+      <xsd:documentation>
+						Element				: 	kenmerkType
+						Type						: 	Tekst
+						Maximale lengte	:	40
+						Beschrijving			:	Het unieke kenmerk van een instantie van het verwerkingsproces. Voor elk aanleververzoek waarvoor nog geen 
+														uniek kenmerk bestaat wordt een nieuw verwerkingsproces gestart. Het kenmerk kan worden gebruikt bij het 
+														opvragen van statussen.
+					</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:normalizedString">
+      <xsd:whiteSpace value="collapse" />
+      <xsd:maxLength value="40" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="berichtsoortType">
+    <xsd:annotation>
+      <xsd:documentation>
+						Element				: 	berichtsoortType
+						Type						:	Tekst
+						Maximale lengte	:	80
+						Beschrijving			:	Het element berichtsoort beschrijft het soort verwerkingsproces dat met een aanleververzoek wordt ge�nitieerd. 
+														Het meegegeven element berichtsoort moet van een type zijn wat binnen Digipoort bekend is.
+					</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:normalizedString">
+      <xsd:whiteSpace value="collapse" />
+      <xsd:maxLength value="80" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="aanleverkenmerkType">
+    <xsd:annotation>
+      <xsd:documentation>
+						Element				:	aanleverkenmerkType
+						Type						:	Tekst
+						Maximale lengte	:	40
+						Beschrijving			:	Het referentiekenmerk aanleveraar bevat een eigen kenmerk dat door de aanleveraar aan het aanleververzoek is 
+														meegegeven. Dit kenmerk blijft het verdere proces onveranderd en stelt de aanleveraar in staat retourberichten te 
+														koppelen aan het aanleververzoek.
+
+														Het referentiekenmerk oorspronkelijke aanlevering bevat het aanleverkenmerk zoals dat in het aanleververzoek is 
+														meegegeven door de aanleveraar. 
+					</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:normalizedString">
+      <xsd:whiteSpace value="collapse" />
+      <xsd:maxLength value="40" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="identiteitsnummerType">
+    <xsd:annotation>
+      <xsd:documentation>
+						Element				:	identiteitsnummerType
+						Type						:	Tekst
+						Maximale lengte	:	35
+						Beschrijving			:	De identiteitsnummer van de aanleveraar is een nummer waarmee degene die het bericht heeft aangeleverd kan worden geidentificeerd. 
+					</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:normalizedString">
+      <xsd:whiteSpace value="collapse" />
+      <xsd:maxLength value="35" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType name="identiteitType">
+    <xsd:annotation>
+      <xsd:documentation>
+						Element				:	identiteitType
+						Type						:	Nummer in combinatie met het type
+						Maximale lengte	: 	35
+						Beschrijving			:	De identiteit van de belanghebbende is een nummer waarmee degene op wie de inhoud van het bedrijfsdocument 
+														betrekking heeft (of die verantwoordelijk is voor het kennisnemen daarvan) kan worden geidentificeerd. Deze identiteit 
+														kan worden gebruikt om een match te maken met een eventueel in het bedrijfsdocument voorkomende identiteit. De 
+														belanghebbende kan ook een ander zijn dan de aanleveraar of opvrager van berichten.
+
+														De identiteit van de ontvanger is een nummer aan de hand waarvan kan worden vastgesteld bij welke partij het bericht 
+														moet worden afgeleverd.
+
+					</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="nummer">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:normalizedString">
+            <xsd:whiteSpace value="collapse" />
+            <xsd:maxLength value="35" />
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="type">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:normalizedString">
+            <xsd:whiteSpace value="collapse" />
+            <xsd:maxLength value="20" />
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:simpleType name="rolType">
+    <xsd:annotation>
+      <xsd:documentation>
+						Element				:	rolType
+						Type						:	Tekst
+						Maximale lengte	:	40
+						Beschrijving			:	Een aanduiding van de rol van de belanghebbende in het verwerkingsproces.
+						
+														Een aanduiding van de rol van de ontvanger in het verwerkingsproces. 
+					</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:normalizedString">
+      <xsd:whiteSpace value="collapse" />
+      <xsd:maxLength value="40" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType name="berichtInhoudType">
+    <xsd:annotation>
+      <xsd:documentation>
+						Beschrijving			:	De berichtinhoud is dat deel van het bericht dat de eigenlijke bedrijfsprocesinformatie bevat.
+					</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="mimeType">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:normalizedString">
+            <xsd:whiteSpace value="collapse" />
+            <xsd:maxLength value="255" />
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="bestandsnaam">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:normalizedString">
+            <xsd:whiteSpace value="collapse" />
+            <xsd:maxLength value="80" />
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="inhoud">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:base64Binary">
+            <xsd:maxLength value="20971520" />
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="berichtBijlagenType">
+    <xsd:annotation>
+      <xsd:documentation>
+						Beschrijving			:	Een of meer bijlagen bij het bedrijfsdocument. Of daadwerkelijk bijlagen kunnen worden toegevoegd hangt af van 
+														het verwerkingsproces.
+					</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element maxOccurs="unbounded" name="bijlage" type="tns:berichtInhoudType" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:simpleType name="autorisatieAdresType">
+    <xsd:annotation>
+      <xsd:documentation>
+						Element				:	autorisatieAdresType
+						Type						:	Tekst
+						Maximale lengte	: 	255
+						Beschrijving			:	Het autorisatieadres bevat het endpoint van de webservice die gebruikt wordt voor het vaststellen van de relatie tussen 
+														aanleveraar of opvrager enerzijds, en de belanghebbende. Het endpoint dient bij Digipoort geregistreerd te staan. Dit 
+														element is optioneel voor de aanleverservice, maar kan door het verwerkingsproces verplicht worden gesteld. Voor de 
+														statusinformatieservice en de mededelingenservice is het element verplicht wanneer de identiteit van de belanghebbende 
+														niet gelijk is aan de identiteit van de opvrager.
+					</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:anyURI">
+      <xsd:whiteSpace value="collapse" />
+      <xsd:maxLength value="255" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="statuscodeType">
+    <xsd:annotation>
+      <xsd:documentation>
+						Element				:	statuscodeType
+						Type						: 	Tekst
+						Maximale lengte	: 	20
+						Beschrijving			:	De code waarmee een status wordt ge�dentificeerd.				
+					</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:normalizedString">
+      <xsd:whiteSpace value="collapse" />
+      <xsd:maxLength value="20" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="statusomschrijvingType">
+    <xsd:annotation>
+      <xsd:documentation>
+						Element				: 	statusomschrijvingType
+						Type						: 	Tekst
+						Maximale lengte	: 	80
+						Beschrijving			:	De omschrijving van de status in begrijpelijke tekst.
+					</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:normalizedString">
+      <xsd:whiteSpace value="collapse" />
+      <xsd:maxLength value="80" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="foutcodeType">
+    <xsd:annotation>
+      <xsd:documentation>
+						Element				:	foutcodeType
+						Type						: 	Tekst
+						Maximale lengte	:	20
+						Beschrijving			:	Een unieke code waarmee een fout kan worden geidentificeerd.				
+					</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:normalizedString">
+      <xsd:whiteSpace value="collapse" />
+      <xsd:maxLength value="20" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="foutbeschrijvingType">
+    <xsd:annotation>
+      <xsd:documentation>
+						Element				:	foutbeschrijvingType
+						Type						:	Tekst
+						Maximale lengte	:	1048576
+						Beschrijving			:	Een omschrijving van de fout. 				
+					</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:normalizedString">
+      <xsd:whiteSpace value="collapse" />
+      <xsd:maxLength value="1048576" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType name="foutType">
+    <xsd:annotation>
+      <xsd:documentation>
+						Element				:	foutType
+						Type						:	Combinatie van foutcode en foutomschrijving.
+					</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="foutcode" type="tns:foutcodeType" />
+      <xsd:element name="foutbeschrijving" type="tns:foutbeschrijvingType" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:simpleType name="statusdetailsType">
+    <xsd:annotation>
+      <xsd:documentation>
+						Element				: 	statusdetailsType
+						Type						:	Tekst
+						Maximale lengte	: 	1048576
+						Beschrijving			:	Extra details bij een status.
+					</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:normalizedString">
+      <xsd:whiteSpace value="collapse" />
+      <xsd:maxLength value="1048576" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType name="constateringenLijstType">
+    <xsd:annotation>
+      <xsd:documentation>
+						Element				:	constateringenLijstType
+						Type						:	Lijst van constateringen gedaan tijdens het proces
+					</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element maxOccurs="unbounded" name="constatering" type="tns:constateringType" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="constateringType">
+    <xsd:annotation>
+      <xsd:documentation>
+						Element				:	constateringType
+						Type						:	Combinatie van foutcode en fout beschrijving.
+					</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="code" type="tns:constateringcodeType" />
+      <xsd:element name="beschrijving" type="tns:constateringbeschrijvingType" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:simpleType name="constateringcodeType">
+    <xsd:annotation>
+      <xsd:documentation>
+						Element				:	constateringcodeType
+						Type						: 	Tekst
+						Maximale lengte	:	20
+						Beschrijving			:	Een unieke code waarmee een constatering kan worden geidentificeerd.				
+					</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:normalizedString">
+      <xsd:whiteSpace value="collapse" />
+      <xsd:maxLength value="20" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="constateringbeschrijvingType">
+    <xsd:annotation>
+      <xsd:documentation>
+						Element				:	constateringbeschrijvingType
+						Type						:	Tekst
+						Maximale lengte	:	1048576
+						Beschrijving			:	Een beschrijving van de constatering. 				
+					</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:normalizedString">
+      <xsd:whiteSpace value="collapse" />
+      <xsd:maxLength value="1048576" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType name="additioneleElementenLijstType">
+    <xsd:annotation>
+      <xsd:documentation>
+						Element				:	additioneleElementenLijstType
+						Type						:	Lijst van additionele elementen met naam en waarden.
+					</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element maxOccurs="unbounded" name="element" type="tns:elementType" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="elementType">
+    <xsd:annotation>
+      <xsd:documentation>
+						Element				:	elementType
+						Type						:	Combinatie van element naam en waarde.
+					</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="naam" type="tns:elementnaamType" />
+      <xsd:element name="waarde" type="tns:elementwaardeType" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:simpleType name="elementnaamType">
+    <xsd:annotation>
+      <xsd:documentation>
+						Element				:	elementnaamType
+						Type						: 	Tekst
+						Maximale lengte	:	40
+						Beschrijving			:	Een unieke naam van het element.				
+					</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:normalizedString">
+      <xsd:whiteSpace value="collapse" />
+      <xsd:maxLength value="40" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="elementwaardeType">
+    <xsd:annotation>
+      <xsd:documentation>
+						Element				:	eleementwaardeType
+						Type						:	Tekst
+						Maximale lengte	:	255
+						Beschrijving			:	Waarde van het element. 				
+					</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:normalizedString">
+      <xsd:whiteSpace value="collapse" />
+      <xsd:maxLength value="255" />
+    </xsd:restriction>
+  </xsd:simpleType>
+</xsd:schema>
