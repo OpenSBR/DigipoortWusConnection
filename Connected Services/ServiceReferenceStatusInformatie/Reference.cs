@@ -8,8 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using System.Net.Security;
-
 namespace LogiusDigipoort.ServiceReferenceStatusInformatie {
     
     
@@ -106,7 +104,7 @@ namespace LogiusDigipoort.ServiceReferenceStatusInformatie {
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    [System.ServiceModel.ServiceContractAttribute(Namespace="http://logius.nl/digipoort/wus/2.0/statusinformatieservice/1.2/", ConfigurationName="ServiceReferenceStatusInformatie.StatusinformatieService_V1_2", ProtectionLevel = ProtectionLevel.Sign)]
+    [System.ServiceModel.ServiceContractAttribute(Namespace="http://logius.nl/digipoort/wus/2.0/statusinformatieservice/1.2/", ConfigurationName="ServiceReferenceStatusInformatie.StatusinformatieService_V1_2")]
     public interface StatusinformatieService_V1_2 {
         
         // CODEGEN: Generating message contract since the operation getBerichtsoorten is neither RPC nor document wrapped.

@@ -8,8 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using System.Net.Security;
-
 namespace LogiusDigipoort.ServiceReferenceAanleveren {
     
     
@@ -166,7 +164,7 @@ namespace LogiusDigipoort.ServiceReferenceAanleveren {
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    [System.ServiceModel.ServiceContractAttribute(Namespace="http://logius.nl/digipoort/wus/2.0/aanleverservice/1.2/", ConfigurationName="ServiceReferenceAanleveren.AanleverService_V1_2", ProtectionLevel = ProtectionLevel.Sign)]
+    [System.ServiceModel.ServiceContractAttribute(Namespace="http://logius.nl/digipoort/wus/2.0/aanleverservice/1.2/", ConfigurationName="ServiceReferenceAanleveren.AanleverService_V1_2")]
     public interface AanleverService_V1_2 {
         
         // CODEGEN: Generating message contract since the operation aanleveren is neither RPC nor document wrapped.

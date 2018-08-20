@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Diagnostics;
 using System.Linq;
-using System.Net;
 using System.Security.Cryptography.X509Certificates;
-using System.ServiceModel;
 using System.Text;
 using System.Threading;
-using LogiusDigipoort.ServiceReferenceAanleveren;
 using LogiusDigipoort.ServiceReferenceStatusInformatie;
 using LogiusDigipoort.WusChannel;
 
@@ -15,14 +12,6 @@ namespace LogiusDigipoort
 {
 	class Program
 	{
-		// Digipoort services "Aansluit Suite" test environment
-		const string ENDPOINT_AANLEVER = "https://cs-bedrijven.procesinfrastructuur.nl/cpl/aanleverservice/1.2";
-		const string ENDPOINT_STATUSINFORMATIE = "https://cs-bedrijven.procesinfrastructuur.nl/cpl/statusinformatieservice/1.2";
-
-		// Location of server certificate file (crt, p12, etc.)
-		// "Aansluit SUite" test environment server certificate provided - valid until December 2019
-		const string SERVER_CERTIFICATE = @"cs-bedrijven_procesinfrastructuur_nl.crt";
-
 		// Location and password for client certificate
 		const string CLIENT_CERTIFICATE = @"Insert filename here";
 		const string CLIENT_CERTIFICATE_PASSWORD = "Insert password here";
@@ -30,111 +19,62 @@ namespace LogiusDigipoort
 		// Location of SBR file to submit
 		const string SAMPLE_FILE = @"Insert filename here";
 
-		const string AUSP = "http://geenausp.nl";
-
 		static void Main(string[] args)
 		{
-			// Create certificates from file
-			X509Certificate2 certServer = new X509Certificate2(SERVER_CERTIFICATE);
-			X509Certificate2 certClient = new X509Certificate2(CLIENT_CERTIFICATE, CLIENT_CERTIFICATE_PASSWORD);
+			WusConnectionProfile digipoort = new WusConnectionProfile()
+			{
+				// "Aansluit Suite" test environment server certificate provided - valid until December 2019
+				ServerCertificate = new X509Certificate2("cs-bedrijven_procesinfrastructuur_nl.crt"),
+				EndpointAanleverService = "https://cs-bedrijven.procesinfrastructuur.nl/cpl/aanleverservice/1.2",
+				EndpointStatusInformatieService = "https://cs-bedrijven.procesinfrastructuur.nl/cpl/statusinformatieservice/1.2",
+				AuspService = "http://geenausp.nl",
+				ConnectionStyle = WusConnectionProfile.WusConnectionStyle.asynchronous
+			};
+			//WusConnectionProfile biv = new WusConnectionProfile()
+			//{
+			//	ServerCertificate = new X509Certificate2("cs-bedrijven_procesinfrastructuur_nl.crt"),
+			//	EndpointAanleverService = "https://bta-frcportaal.nl/biv-wus20v12/AanleverService",
+			//	EndpointStatusInformatieService = "https://bta-frcportaal.nl/biv-wus20v12/StatusInformatieService",
+			//	AuspService = "http://localhost:8080/ode/processes/CSPService-OK",
+			//	ConnectionStyle = WusConnectionProfile.WusConnectionStyle.synchronous
+			//};
 
-			// Create submission request
-			aanleverenRequest aanleverRequest = CreateAanleverRequest(SAMPLE_FILE);
+			X509Certificate2 clientCertificate = new X509Certificate2(CLIENT_CERTIFICATE, CLIENT_CERTIFICATE_PASSWORD);
 
-			// Communicate with Digipoort
-			aanleverenResponse aanleverResponse = ConnectAanleverService(certClient, certServer, aanleverRequest);
+			WusClient wusClient = new WusClient(digipoort, clientCertificate);
 
-			// Write results to screen
+			Console.WriteLine("Creating request");
+			ServiceReferenceAanleveren.aanleverenRequest aanleverRequest = wusClient.CreateAanleverRequest("Happyflow", "Omzetbelasting", WusClient.CreateIdentiteit("001000044B39", "BTW"), "Intermediair", SAMPLE_FILE);
+
+			Console.WriteLine("Sending request");
+			Stopwatch timer = new Stopwatch();
+			timer.Start();
+
+			ServiceReferenceAanleveren.aanleverenResponse aanleverResponse = wusClient.Aanleveren(aanleverRequest);
+			timer.Stop();
+
 			Console.WriteLine($"Message ID (kenmerk): {aanleverResponse.aanleverResponse.kenmerk}");
 			Console.WriteLine($"Time stamp: {aanleverResponse.aanleverResponse.tijdstempelAangeleverd}");
+			Console.WriteLine($"Received response in {timer.Elapsed}");
 			Console.WriteLine();
-			Console.WriteLine("Waiting 10 seconds before retrieving status...");
-			Console.WriteLine();
 
-			Thread.Sleep(10000);
-
-
-			// Create status request
-			getStatussenProcesRequest1 statusRequest = CreateStatusRequest(aanleverResponse.aanleverResponse.kenmerk);
-
-			// Communicate with Digipoort
-			getStatussenProcesResponse1 statusResponse = ConnectStatusInformatieService(certClient, certServer, statusRequest);
-
-			foreach (StatusResultaat status in statusResponse.getStatussenProcesResponse.getStatussenProcesReturn)
+			if (wusClient.Profile.ConnectionStyle == WusConnectionProfile.WusConnectionStyle.asynchronous)
 			{
-				Console.WriteLine($"Status: {status.statuscode} - {status.statusomschrijving}");
+				Console.WriteLine("Waiting 8 seconds before retrieving status...");
+				Console.WriteLine();
+
+				Thread.Sleep(8000);
+
+				getStatussenProcesResponse1 statusResponse = wusClient.StatusInformatie(aanleverResponse.aanleverResponse.kenmerk);
+
+				if (statusResponse != null)
+					foreach (StatusResultaat status in statusResponse.getStatussenProcesResponse.getStatussenProcesReturn)
+						Console.WriteLine($"Status: {status.statuscode} - {status.statusomschrijving}");
+				else
+					Console.WriteLine("Unable to query status");
 			}
 
 			Console.ReadKey();
-		}
-
-		static aanleverenRequest CreateAanleverRequest(string fileLocation)
-		{
-			// Read file as UTF-8 byte array
-			byte[] array = FileIO.ReadFileToUtf8Array(fileLocation);
-
-			// File name to submit in message
-			string filename = Path.GetFileName(fileLocation);
-
-			// Create request           
-			aanleverenRequest request = new aanleverenRequest
-			{
-				aanleverRequest = new aanleverRequest
-				{
-					aanleverkenmerk = "Happyflow",
-					berichtsoort = "Omzetbelasting",
-					identiteitBelanghebbende = new ServiceReferenceAanleveren.identiteitType
-					{
-						nummer = "001000044B39",
-						type = "BTW"
-					},
-					rolBelanghebbende = "Intermediair",
-					berichtInhoud = new berichtInhoudType
-					{
-						bestandsnaam = filename,
-						inhoud = array,
-						mimeType = MediaTypeNames.Application.Xml
-					},
-					autorisatieAdres = AUSP
-				}
-			};
-			return request;
-		}
-
-		static getStatussenProcesRequest1 CreateStatusRequest(string kenmerk)
-		{
-			getStatussenProcesRequest1 getStatus = new getStatussenProcesRequest1(new getStatussenProcesRequest()
-			{
-				kenmerk = kenmerk,
-				autorisatieAdres = AUSP
-			});
-
-			return getStatus;
-		}
-
-		static aanleverenResponse ConnectAanleverService(X509Certificate2 certClient, X509Certificate2 certServer, aanleverenRequest request)
-		{
-			EndpointAddress address = new EndpointAddress(ENDPOINT_AANLEVER);
-
-			WusChannelFactory<AanleverService_V1_2> factory = new WusChannelFactory<AanleverService_V1_2>(address, certClient, certServer);
-			AanleverService_V1_2 client = factory.CreateChannel();
-
-			aanleverenResponse result = client.aanleveren(request);
-
-			return result;
-		}
-
-
-		static getStatussenProcesResponse1 ConnectStatusInformatieService(X509Certificate2 certClient, X509Certificate2 certServer, getStatussenProcesRequest1 statusRequest)
-		{
-			EndpointAddress address = new EndpointAddress(ENDPOINT_STATUSINFORMATIE);
-
-			WusChannelFactory<StatusinformatieService_V1_2> factory = new WusChannelFactory<StatusinformatieService_V1_2>(address, certClient, certServer);
-			StatusinformatieService_V1_2 client = factory.CreateChannel();
-
-			getStatussenProcesResponse1 result = client.getStatussenProces(statusRequest);
-
-			return result;
 		}
 	}
 }

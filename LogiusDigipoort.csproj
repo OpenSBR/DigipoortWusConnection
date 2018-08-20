@@ -51,6 +51,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="WusChannel\WusClient.cs" />
+    <Compile Include="WusChannel\WusConnectionProfile.cs" />
     <Compile Include="Helpers\FileIO.cs" />
     <Compile Include="Helpers\MediaTypeNames.cs" />
     <Compile Include="Program.cs" />
