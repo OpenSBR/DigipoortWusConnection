@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace LogiusDigipoort
 {
-    public class Helper
+    public static class FileIO
     {
         public static byte[] ReadFileToUtf8Array(string fileLocation)
         {
