@@ -25,7 +25,6 @@ namespace LogiusDigipoort.WusChannel
 
 		public static T CreateServiceClient(string address, X509Certificate2 certClient, X509Certificate2 certServer)
 		{
-			//return CreateServiceClient(new EndpointAddress(new Uri(address), EndpointIdentity.CreateDnsIdentity("cs-bedrijven.procesinfrastructuur.nl")), certClient, certServer);
 			return CreateServiceClient(new EndpointAddress(address), certClient, certServer);
 		}
 

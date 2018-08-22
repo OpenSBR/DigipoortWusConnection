@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
+using System.ServiceModel;
 using System.Text;
 using System.Threading;
+using LogiusDigipoort.ServiceReferenceAanleveren;
 using LogiusDigipoort.ServiceReferenceStatusInformatie;
 using LogiusDigipoort.WusChannel;
 
@@ -32,7 +34,7 @@ namespace LogiusDigipoort
 			};
 			//WusConnectionProfile biv = new WusConnectionProfile()
 			//{
-			//	ServerCertificate = new X509Certificate2("cs-bedrijven_procesinfrastructuur_nl.crt"),
+			//	ServerCertificate = new X509Certificate2(""),
 			//	EndpointAanleverService = "https://bta-frcportaal.nl/biv-wus20v12/AanleverService",
 			//	EndpointStatusInformatieService = "https://bta-frcportaal.nl/biv-wus20v12/StatusInformatieService",
 			//	AuspService = "http://localhost:8080/ode/processes/CSPService-OK",
@@ -44,13 +46,27 @@ namespace LogiusDigipoort
 			WusClient wusClient = new WusClient(digipoort, clientCertificate);
 
 			Console.WriteLine("Creating request");
-			ServiceReferenceAanleveren.aanleverenRequest aanleverRequest = wusClient.CreateAanleverRequest("Happyflow", "Omzetbelasting", WusClient.CreateIdentiteit("001000044B39", "BTW"), "Intermediair", SAMPLE_FILE);
+
+			ServiceReferenceAanleveren.identiteitType identity = new ServiceReferenceAanleveren.identiteitType("001000044B39", "BTW");
+			aanleverenRequest aanleverRequest = wusClient.CreateAanleverRequest("Happyflow", "Omzetbelasting", identity, "Intermediair", SAMPLE_FILE);
 
 			Console.WriteLine("Sending request");
 			Stopwatch timer = new Stopwatch();
 			timer.Start();
 
-			ServiceReferenceAanleveren.aanleverenResponse aanleverResponse = wusClient.Aanleveren(aanleverRequest);
+			aanleverenResponse aanleverResponse = null;
+			try
+			{
+				aanleverResponse = wusClient.Aanleveren(aanleverRequest);
+			}
+			catch (FaultException<ServiceReferenceAanleveren.foutType> ex)
+			{
+				Console.WriteLine($"{ex.Detail.foutcode} - {ex.Detail.foutbeschrijving}");
+				Console.ReadKey();
+
+				return;
+			}
+
 			timer.Stop();
 
 			Console.WriteLine($"Message ID (kenmerk): {aanleverResponse.aanleverResponse.kenmerk}");
@@ -65,13 +81,20 @@ namespace LogiusDigipoort
 
 				Thread.Sleep(8000);
 
-				getStatussenProcesResponse1 statusResponse = wusClient.StatusInformatie(aanleverResponse.aanleverResponse.kenmerk);
+				try
+				{
+					getStatussenProcesResponse1 statusResponse = wusClient.StatusInformatie(aanleverResponse.aanleverResponse.kenmerk);
 
-				if (statusResponse != null)
-					foreach (StatusResultaat status in statusResponse.getStatussenProcesResponse.getStatussenProcesReturn)
-						Console.WriteLine($"Status: {status.statuscode} - {status.statusomschrijving}");
-				else
-					Console.WriteLine("Unable to query status");
+					if (statusResponse != null)
+						foreach (StatusResultaat status in statusResponse.getStatussenProcesResponse.getStatussenProcesReturn)
+							Console.WriteLine($"Status: {status.statuscode} - {status.statusomschrijving}");
+					else
+						Console.WriteLine("Unable to query status");
+				}
+				catch (FaultException<ServiceReferenceStatusInformatie.foutType> ex)
+				{
+					Console.WriteLine($"{ex.Detail.foutcode} - {ex.Detail.foutbeschrijving}");
+				}
 			}
 
 			Console.ReadKey();

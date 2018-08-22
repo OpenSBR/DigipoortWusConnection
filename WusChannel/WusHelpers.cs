@@ -15,14 +15,14 @@ namespace LogiusDigipoort.WusChannel
 		{
 			//Create binding element for security        
 			AsymmetricSecurityBindingElement secBE = (AsymmetricSecurityBindingElement)SecurityBindingElement.CreateMutualCertificateBindingElement(MessageSecurityVersion.WSSecurity10WSTrust13WSSecureConversation13WSSecurityPolicy12BasicSecurityProfile10);
-			//secBE.MessageSecurityVersion = MessageSecurityVersion.WSSecurity10WSTrust13WSSecureConversation13WSSecurityPolicy12BasicSecurityProfile10;
-			secBE.EnableUnsecuredResponse = true;
-			secBE.MessageProtectionOrder = MessageProtectionOrder.EncryptBeforeSign;
-			secBE.IncludeTimestamp = true;
-			secBE.DefaultAlgorithmSuite = SecurityAlgorithmSuite.TripleDesRsa15;
 
-			//Explicit accept secured answers from endpoint              
+			//Explicitly accept secured answers from endpoint              
 			secBE.AllowSerializedSigningTokenOnReply = true;
+
+			secBE.DefaultAlgorithmSuite = SecurityAlgorithmSuite.TripleDesRsa15;
+			secBE.EnableUnsecuredResponse = true;
+			secBE.IncludeTimestamp = true;
+			secBE.MessageProtectionOrder = MessageProtectionOrder.EncryptBeforeSign;
 
 			return secBE;
 		}

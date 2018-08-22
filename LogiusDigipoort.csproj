@@ -51,6 +51,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="ServiceReferenceExtensions\ServiceReferenceAanleverenPartial.cs" />
     <Compile Include="WusChannel\WusClient.cs" />
     <Compile Include="WusChannel\WusConnectionProfile.cs" />
     <Compile Include="Helpers\FileIO.cs" />
@@ -150,5 +151,6 @@
   <ItemGroup>
     <Content Include=".gitignore" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

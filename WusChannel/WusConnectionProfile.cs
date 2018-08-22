@@ -10,7 +10,20 @@ namespace LogiusDigipoort.WusChannel
 {
 	public class WusConnectionProfile
 	{
-		public enum WusConnectionStyle { asynchronous, synchronous }
+		/// <summary>
+		/// Defines communication style of WUS server
+		/// </summary>
+		public enum WusConnectionStyle
+		{
+			/// <summary>
+			/// Messages will always be accepted, and processed later on. A status information call is always required.
+			/// </summary>
+			asynchronous,
+			/// <summary>
+			/// Messages will be validated directly, and any error messages will be returned instantly.
+			/// </summary>
+			synchronous
+		}
 
 		public string EndpointAanleverService { get; set; }
 

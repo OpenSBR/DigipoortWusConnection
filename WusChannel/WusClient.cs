@@ -60,25 +60,7 @@ namespace LogiusDigipoort.WusChannel
 		public aanleverenRequest CreateAanleverRequest(string aanleverkenmerk, string berichtsoort, ServiceReferenceAanleveren.identiteitType identiteitBelanghebbende, string rolBelanghebbende, string fileLocation)
 		{
 			// Create request           
-			return new aanleverenRequest
-			{
-				aanleverRequest = new aanleverRequest
-				{
-					aanleverkenmerk = aanleverkenmerk,
-					berichtsoort = berichtsoort,
-					identiteitBelanghebbende = identiteitBelanghebbende,
-					rolBelanghebbende = rolBelanghebbende,
-					berichtInhoud = new berichtInhoudType
-					{
-						// File name to submit in message
-						bestandsnaam = Path.GetFileName(fileLocation),
-						// Read file as UTF-8 byte array
-						inhoud = FileIO.ReadFileToUtf8Array(fileLocation),
-						mimeType = MediaTypeNames.Application.Xml
-					},
-					autorisatieAdres = Profile.AuspService
-				}
-			};
+			return new aanleverenRequest(aanleverkenmerk, berichtsoort, identiteitBelanghebbende, rolBelanghebbende, fileLocation, Profile.AuspService);
 		}
 
 		public getStatussenProcesRequest1 CreateStatusRequest(string kenmerk)
@@ -90,15 +72,6 @@ namespace LogiusDigipoort.WusChannel
 			});
 
 			return getStatus;
-		}
-
-		public static ServiceReferenceAanleveren.identiteitType CreateIdentiteit(string nummer, string type)
-		{
-			return new ServiceReferenceAanleveren.identiteitType
-			{
-				nummer = nummer,
-				type = type
-			};
 		}
 	}
 }
