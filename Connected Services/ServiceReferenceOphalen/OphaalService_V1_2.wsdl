@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap11="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:kv="http://logius.nl/digipoort/koppelvlakservices/1.2/" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:tns="http://logius.nl/digipoort/wus/2.0/ophaalservice/1.2/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" targetNamespace="http://logius.nl/digipoort/wus/2.0/ophaalservice/1.2/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:documentation>
+		TLS of SSL 3 met:
+
+		TLS_DHE_RSA_WITH_AES_128_CBC_SHA 
+		TLS_RSA_WITH_AES_128_CBC_SHA
+		TLS_RSA_WITH_AES_256_CBC_SHA
+		TLS_DHE_RSA_WITH_AES_256_CBC_SHA
+		TLS_RSA_WITH_3DES_EDE_CBC_SHA
+		SSL_RSA_WITH_AES_128_CBC_SHA
+
+		Elementen:
+ 
+		Het is niet toegestaan eigen header velden toe te voegen aan het bericht.
+
+		Timestamp
+		http://docs.oasis-open.org/wss/2004/01/oasis-200401-wsswssecurity-utility-1.0.xsd
+		wsu:Timestamp
+		wsu:Created is verplicht
+		wsu:Expires is optioneel
+
+		WS-Adressing: 
+		http://www.w3.org/2006/05/addressing/wsdl
+
+		Request:
+
+		wsa:To
+		gelijk aan het endpoint van de service
+
+		wsa:Action
+        is gelijk aan de soapAction behorende bij de SOAP operatie.       
+
+		wsa:MessageID
+		voldoen aan :
+		http://www.w3.org/TR/2007/REC-ws-addr-metadata-20070904/
+
+		wsa:ReplyTo
+		optioneel, indien gevuld moet deze de volgende waarde hebben: 
+		http://www.w3.org/2005/08/addressing/anonymous
+
+		Response:
+
+		wsa:To
+		http://www.w3.org/2005/08/addressing/anonymous
+
+		wsa:Action
+        is gelijk aan de wsaw:Action behorende bij de SOAP response.       
+       
+		wsa:MessageID
+		voldoen aan :
+		http://www.w3.org/TR/2007/REC-ws-addr-metadata-20070904/
+
+		wsa:RelatesTo
+		voldoen aan : http://www.w3.org/TR/2007/REC-ws-addr-metadata-20070904/
+		Is hetzelfde ID zijn als in de request.
+
+		Overige headers mogen alleen
+		voorkomen met waarde:
+		http://www.w3.org/2005/08/addressing/anonymous
+		http://www.w3.org/2005/08/addressing/none
+
+		Digitale handtekening:
+		http://www.w3.org/2000/09/xmldsig#
+
+		Canonicalization
+		http://www.w3.org/2001/10/xml-exc-c14n#
+
+		Digest
+		http://www.w3.org/2000/09/xmldsig#sha1
+
+		Signature
+		http://www.w3.org/2000/09/xmldsig#rsa-sha1
+
+		De volgende elementen dienen ondertekend worden:
+		- het element timestamp
+		- alle ws adressing elementen
+		- de body.
+
+		Het gebruikte x.509 certificaat moet als binary security token meegeleverd worden.
+		http://docs.oasis-open.org/wss/2004/01/oasis-200401-wsswssecurity-secext-1.0.xsd
+
+		wsse:BinarySecurityToken
+		Encoding
+		http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-soapmessage-security-1.0#Base64Binary
+		Value
+		http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-x509-tokenprofile-1.0#X509v3
+
+	</wsdl:documentation>
+  <wsp:Policy wsu:Id="X509EndpointPolicy">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <sp:AsymmetricBinding>
+          <wsp:Policy>
+            <sp:InitiatorToken>
+              <wsp:Policy>
+                <sp:X509Token sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+                  <wsp:Policy>
+                    <sp:WssX509V3Token10 />
+                  </wsp:Policy>
+                </sp:X509Token>
+              </wsp:Policy>
+            </sp:InitiatorToken>
+            <sp:RecipientToken>
+              <wsp:Policy>
+                <sp:X509Token sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToInitiator">
+                  <wsp:Policy>
+                    <sp:WssX509V3Token10 />
+                  </wsp:Policy>
+                </sp:X509Token>
+              </wsp:Policy>
+            </sp:RecipientToken>
+            <sp:AlgorithmSuite>
+              <wsp:Policy>
+                <sp:Basic128Rsa15 />
+                <sp:Basic256Rsa15 />
+                <sp:TripleDesRsa15 />
+              </wsp:Policy>
+            </sp:AlgorithmSuite>
+            <sp:IncludeTimestamp />
+            <sp:EncryptBeforeSigning />
+            <sp:OnlySignEntireHeadersAndBody />
+          </wsp:Policy>
+        </sp:AsymmetricBinding>
+        <wsam:Addressing>
+          <wsp:Policy>
+            <wsp:ExactlyOne>
+              <wsp:All>
+                <wsam:Anonymous>required</wsam:Anonymous>
+              </wsp:All>
+              <wsp:All>
+                <AnonymousResponses />
+              </wsp:All>
+            </wsp:ExactlyOne>
+          </wsp:Policy>
+        </wsam:Addressing>
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsp:Policy wsu:Id="SecureMessagePolicy">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <sp:SignedParts>
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:SignedElements>
+          <sp:XPath>/*[namespace-uri()='http://schemas.xmlsoap.org/soap/envelope/' and local-name()='Envelope']/*[namespace-uri()='http://schemas.xmlsoap.org/soap/envelope/' and local-name()='Header']/*[namespace-uri()='http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd' and local-name()='Security']/*[namespace-uri()='http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd' and local-name()='Timestamp']</sp:XPath>
+          <sp:XPath>/*[namespace-uri()='http://www.w3.org/2003/05/soap-envelope' and local-name()='Envelope']/*[namespace-uri()='http://www.w3.org/2003/05/soap-envelope' and local-name()='Header']/*[namespace-uri()='http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd' and local-name()='Security']/*[namespace-uri()='http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd' and local-name()='Timestamp']</sp:XPath>
+        </sp:SignedElements>
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsdl:types>
+    <xsd:schema elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+      <xsd:import schemaLocation="/cpl/digipoort-koppelvlak-1.2.xsd" namespace="http://logius.nl/digipoort/koppelvlakservices/1.2/" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="getBerichtenKenmerkMessageResponse">
+    <wsdl:part name="getBerichtenKenmerkResponse" element="kv:getBerichtenKenmerkResponse" />
+  </wsdl:message>
+  <wsdl:message name="getNieuweBerichtenLijstMessageResponse">
+    <wsdl:part name="getNieuweBerichtenLijstResponse" element="kv:getNieuweBerichtenLijstResponse" />
+  </wsdl:message>
+  <wsdl:message name="getBerichtenLijstMessageRequest">
+    <wsdl:part name="getBerichtenLijstRequest" element="kv:getBerichtenLijstRequest" />
+  </wsdl:message>
+  <wsdl:message name="getBerichtenLijstMessageResponse">
+    <wsdl:part name="getBerichtenLijstResponse" element="kv:getBerichtenLijstResponse" />
+  </wsdl:message>
+  <wsdl:message name="getBerichtenMessageResponse">
+    <wsdl:part name="getBerichtenResponse" element="kv:getBerichtenResponse" />
+  </wsdl:message>
+  <wsdl:message name="getNieuweBerichtenLijstMessageRequest">
+    <wsdl:part name="getNieuweBerichtenLijstRequest" element="kv:getNieuweBerichtenLijstRequest" />
+  </wsdl:message>
+  <wsdl:message name="getBerichtenKenmerkMessageRequest">
+    <wsdl:part name="getBerichtenKenmerkRequest" element="kv:getBerichtenKenmerkRequest" />
+  </wsdl:message>
+  <wsdl:message name="getNieuweBerichtenMessageResponse">
+    <wsdl:part name="getNieuweBerichtenResponse" element="kv:getNieuweBerichtenResponse" />
+  </wsdl:message>
+  <wsdl:message name="getNieuweBerichtenKenmerkMessageRequest">
+    <wsdl:part name="getNieuweBerichtenKenmerkRequest" element="kv:getNieuweBerichtenKenmerkRequest" />
+  </wsdl:message>
+  <wsdl:message name="getNieuweBerichtenKenmerkMessageResponse">
+    <wsdl:part name="getNieuweBerichtenKenmerkResponse" element="kv:getNieuweBerichtenKenmerkResponse" />
+  </wsdl:message>
+  <wsdl:message name="OphaalServiceFault">
+    <wsdl:part name="fault" element="kv:ophaalFault" />
+  </wsdl:message>
+  <wsdl:message name="getBerichtenMessageRequest">
+    <wsdl:part name="getBerichtenRequest" element="kv:getBerichtenRequest" />
+  </wsdl:message>
+  <wsdl:message name="getNieuweBerichtenMessageRequest">
+    <wsdl:part name="getNieuweBerichtenRequest" element="kv:getNieuweBerichtenRequest" />
+  </wsdl:message>
+  <wsdl:portType name="OphaalService_V1_2">
+    <wsdl:operation name="getBerichten">
+      <wsdl:input name="getBerichtenRequest" message="tns:getBerichtenMessageRequest" />
+      <wsdl:output wsaw:Action="http://logius.nl/digipoort/wus/2.0/ophaalservice/1.2/OphaalService/getBerichtenResponse" name="getBerichtenResponse" message="tns:getBerichtenMessageResponse" />
+      <wsdl:fault wsaw:Action="http://logius.nl/digipoort/wus/2.0/ophaalservice/1.2/OphaalService/getBerichten/Fault/" name="ophaalServiceFault" message="tns:OphaalServiceFault" />
+    </wsdl:operation>
+    <wsdl:operation name="getNieuweBerichten">
+      <wsdl:input name="getNieuweBerichtenRequest" message="tns:getNieuweBerichtenMessageRequest" />
+      <wsdl:output wsaw:Action="http://logius.nl/digipoort/wus/2.0/ophaalservice/1.2/OphaalService/getNieuweBerichtenResponse" name="getNieuweBerichtenResponse" message="tns:getNieuweBerichtenMessageResponse" />
+      <wsdl:fault wsaw:Action="http://logius.nl/digipoort/wus/2.0/ophaalservice/1.2/OphaalService/getNieuweBerichten/Fault/" name="ophaalServiceFault" message="tns:OphaalServiceFault" />
+    </wsdl:operation>
+    <wsdl:operation name="getBerichtenLijst">
+      <wsdl:input name="getBerichtenLijstRequest" message="tns:getBerichtenLijstMessageRequest" />
+      <wsdl:output wsaw:Action="http://logius.nl/digipoort/wus/2.0/ophaalservice/1.2/OphaalService/getBerichtenLijstResponse" name="getBerichtenLijstResponse" message="tns:getBerichtenLijstMessageResponse" />
+      <wsdl:fault wsaw:Action="http://logius.nl/digipoort/wus/2.0/ophaalservice/1.2/OphaalService/getBerichtenLijst/Fault/" name="ophaalServiceFault" message="tns:OphaalServiceFault" />
+    </wsdl:operation>
+    <wsdl:operation name="getNieuweBerichtenLijst">
+      <wsdl:input name="getNieuweBerichtenLijstRequest" message="tns:getNieuweBerichtenLijstMessageRequest" />
+      <wsdl:output wsaw:Action="http://logius.nl/digipoort/wus/2.0/ophaalservice/1.2/OphaalService/getNieuweBerichtenLijstResponse" name="getNieuweBerichtenLijstResponse" message="tns:getNieuweBerichtenLijstMessageResponse" />
+      <wsdl:fault wsaw:Action="http://logius.nl/digipoort/wus/2.0/ophaalservice/1.2/OphaalService/getNieuweBerichtenLijst/Fault/" name="ophaalServiceFault" message="tns:OphaalServiceFault" />
+    </wsdl:operation>
+    <wsdl:operation name="getBerichtenKenmerk">
+      <wsdl:input name="getBerichtenKenmerkRequest" message="tns:getBerichtenKenmerkMessageRequest" />
+      <wsdl:output wsaw:Action="http://logius.nl/digipoort/wus/2.0/ophaalservice/1.2/OphaalService/getBerichtenKenmerkResponse" name="getBerichtenKenmerkResponse" message="tns:getBerichtenKenmerkMessageResponse" />
+      <wsdl:fault wsaw:Action="http://logius.nl/digipoort/wus/2.0/ophaalservice/1.2/OphaalService/getBerichtenKenmerk/Fault/" name="ophaalServiceFault" message="tns:OphaalServiceFault" />
+    </wsdl:operation>
+    <wsdl:operation name="getNieuweBerichtenKenmerk">
+      <wsdl:input name="getNieuweBerichtenKenmerkRequest" message="tns:getNieuweBerichtenKenmerkMessageRequest" />
+      <wsdl:output wsaw:Action="http://logius.nl/digipoort/wus/2.0/ophaalservice/1.2/OphaalService/getNieuweBerichtenKenmerkResponse" name="getNieuweBerichtenKenmerkResponse" message="tns:getNieuweBerichtenKenmerkMessageResponse" />
+      <wsdl:fault wsaw:Action="http://logius.nl/digipoort/wus/2.0/ophaalservice/1.2/OphaalService/getNieuweBerichtenKenmerk/Fault/" name="ophaalServiceFault" message="tns:OphaalServiceFault" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="OphaalServiceSoapBinding_V1_2" type="tns:OphaalService_V1_2">
+    <soap11:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsp:PolicyReference URI="#X509EndpointPolicy" />
+    <wsdl:operation name="getBerichten">
+      <soap11:operation soapAction="http://logius.nl/digipoort/wus/2.0/ophaalservice/1.2/OphaalService/getBerichtenRequest" />
+      <wsdl:input name="getBerichtenRequest">
+        <soap11:body use="literal" />
+        <wsp:PolicyReference URI="#SecureMessagePolicy" />
+      </wsdl:input>
+      <wsdl:output name="getBerichtenResponse">
+        <soap11:body use="literal" />
+        <wsp:PolicyReference URI="#SecureMessagePolicy" />
+      </wsdl:output>
+      <wsdl:fault name="ophaalServiceFault">
+        <soap11:fault use="literal" name="ophaalServiceFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getNieuweBerichten">
+      <soap11:operation soapAction="http://logius.nl/digipoort/wus/2.0/ophaalservice/1.2/OphaalService/getNieuweBerichtenRequest" />
+      <wsdl:input name="getNieuweBerichtenRequest">
+        <soap11:body use="literal" />
+        <wsp:PolicyReference URI="#SecureMessagePolicy" />
+      </wsdl:input>
+      <wsdl:output name="getNieuweBerichtenResponse">
+        <soap11:body use="literal" />
+        <wsp:PolicyReference URI="#SecureMessagePolicy" />
+      </wsdl:output>
+      <wsdl:fault name="ophaalServiceFault">
+        <soap11:fault use="literal" name="ophaalServiceFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getBerichtenLijst">
+      <soap11:operation soapAction="http://logius.nl/digipoort/wus/2.0/ophaalservice/1.2/OphaalService/getBerichtenLijstRequest" />
+      <wsdl:input name="getBerichtenLijstRequest">
+        <soap11:body use="literal" />
+        <wsp:PolicyReference URI="#SecureMessagePolicy" />
+      </wsdl:input>
+      <wsdl:output name="getBerichtenLijstResponse">
+        <soap11:body use="literal" />
+        <wsp:PolicyReference URI="#SecureMessagePolicy" />
+      </wsdl:output>
+      <wsdl:fault name="ophaalServiceFault">
+        <soap11:fault use="literal" name="ophaalServiceFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getNieuweBerichtenLijst">
+      <soap11:operation soapAction="http://logius.nl/digipoort/wus/2.0/ophaalservice/1.2/OphaalService/getNieuweBerichtenLijstRequest" />
+      <wsdl:input name="getNieuweBerichtenLijstRequest">
+        <soap11:body use="literal" />
+        <wsp:PolicyReference URI="#SecureMessagePolicy" />
+      </wsdl:input>
+      <wsdl:output name="getNieuweBerichtenLijstResponse">
+        <soap11:body use="literal" />
+        <wsp:PolicyReference URI="#SecureMessagePolicy" />
+      </wsdl:output>
+      <wsdl:fault name="ophaalServiceFault">
+        <soap11:fault use="literal" name="ophaalServiceFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getBerichtenKenmerk">
+      <soap11:operation soapAction="http://logius.nl/digipoort/wus/2.0/ophaalservice/1.2/OphaalService/getBerichtenKenmerkRequest" />
+      <wsdl:input name="getBerichtenKenmerkRequest">
+        <soap11:body use="literal" />
+        <wsp:PolicyReference URI="#SecureMessagePolicy" />
+      </wsdl:input>
+      <wsdl:output name="getBerichtenKenmerkResponse">
+        <soap11:body use="literal" />
+        <wsp:PolicyReference URI="#SecureMessagePolicy" />
+      </wsdl:output>
+      <wsdl:fault name="ophaalServiceFault">
+        <soap11:fault use="literal" name="ophaalServiceFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getNieuweBerichtenKenmerk">
+      <soap11:operation soapAction="http://logius.nl/digipoort/wus/2.0/ophaalservice/1.2/OphaalService/getNieuweBerichtenKenmerkRequest" />
+      <wsdl:input name="getNieuweBerichtenKenmerkRequest">
+        <soap11:body use="literal" />
+        <wsp:PolicyReference URI="#SecureMessagePolicy" />
+      </wsdl:input>
+      <wsdl:output name="getNieuweBerichtenKenmerkResponse">
+        <soap11:body use="literal" />
+        <wsp:PolicyReference URI="#SecureMessagePolicy" />
+      </wsdl:output>
+      <wsdl:fault name="ophaalServiceFault">
+        <soap11:fault use="literal" name="ophaalServiceFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="OphaalService_V1_2">
+    <wsdl:port name="OphaalService_V1_2" binding="tns:OphaalServiceSoapBinding_V1_2">
+      <soap11:address location="https://cs-bedrijven.procesinfrastructuur.nl:443/cpl/ophaalservice/services/OphaalService_V1_2" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

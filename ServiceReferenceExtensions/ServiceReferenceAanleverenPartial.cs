@@ -40,5 +40,10 @@ namespace LogiusDigipoort.ServiceReferenceAanleveren
 			this.nummer = nummer;
 			this.type = type;
 		}
+
+		public override string ToString()
+		{
+			return $"{type}:{nummer}";
+		}
 	}
 }

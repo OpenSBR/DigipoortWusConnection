@@ -46,12 +46,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Connected Services\ServiceReferenceOphalen\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="Connected Services\ServiceReferenceStatusInformatie\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
     <Compile Include="ServiceReferenceExtensions\ServiceReferenceAanleverenPartial.cs" />
+    <Compile Include="ServiceReferenceExtensions\ServiceReferenceOphalenPartial.cs" />
+    <Compile Include="ServiceReferenceExtensions\ServiceReferenceStatusInformatiePartial.cs" />
     <Compile Include="WusChannel\WusClient.cs" />
     <Compile Include="WusChannel\WusConnectionProfile.cs" />
     <Compile Include="Helpers\FileIO.cs" />
@@ -82,6 +89,46 @@
     <None Include="Connected Services\ServiceReferenceAanleveren\LogiusDigipoort.ServiceReferenceAanleveren.aanleverResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
+    <None Include="Connected Services\ServiceReferenceOphalen\digipoort-koppelvlak-1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\ServiceReferenceOphalen\LogiusDigipoort.ServiceReferenceOphalen.getBerichtenKenmerkResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ServiceReferenceOphalen\LogiusDigipoort.ServiceReferenceOphalen.getBerichtenKenmerkResponse1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ServiceReferenceOphalen\LogiusDigipoort.ServiceReferenceOphalen.getBerichtenLijstResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ServiceReferenceOphalen\LogiusDigipoort.ServiceReferenceOphalen.getBerichtenLijstResponse1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ServiceReferenceOphalen\LogiusDigipoort.ServiceReferenceOphalen.getBerichtenResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ServiceReferenceOphalen\LogiusDigipoort.ServiceReferenceOphalen.getBerichtenResponse1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ServiceReferenceOphalen\LogiusDigipoort.ServiceReferenceOphalen.getNieuweBerichtenKenmerkResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ServiceReferenceOphalen\LogiusDigipoort.ServiceReferenceOphalen.getNieuweBerichtenKenmerkResponse1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ServiceReferenceOphalen\LogiusDigipoort.ServiceReferenceOphalen.getNieuweBerichtenLijstResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ServiceReferenceOphalen\LogiusDigipoort.ServiceReferenceOphalen.getNieuweBerichtenLijstResponse1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ServiceReferenceOphalen\LogiusDigipoort.ServiceReferenceOphalen.getNieuweBerichtenResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ServiceReferenceOphalen\LogiusDigipoort.ServiceReferenceOphalen.getNieuweBerichtenResponse1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ServiceReferenceOphalen\OphaalService_V1_2.wsdl" />
     <None Include="Connected Services\ServiceReferenceStatusInformatie\1.wsdl" />
     <None Include="Connected Services\ServiceReferenceStatusInformatie\digipoort-koppelvlak-1.xsd">
       <SubType>Designer</SubType>
@@ -122,6 +169,7 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadataStorage Include="Connected Services\ServiceReferenceAanleveren\" />
+    <WCFMetadataStorage Include="Connected Services\ServiceReferenceOphalen\" />
     <WCFMetadataStorage Include="Connected Services\ServiceReferenceStatusInformatie\" />
   </ItemGroup>
   <ItemGroup>
@@ -150,6 +198,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include=".gitignore" />
+    <None Include="Connected Services\ServiceReferenceOphalen\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Connected Services\ServiceReferenceOphalen\configuration.svcinfo" />
+    <None Include="Connected Services\ServiceReferenceOphalen\configuration91.svcinfo" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

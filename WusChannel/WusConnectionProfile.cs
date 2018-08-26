@@ -29,6 +29,12 @@ namespace LogiusDigipoort.WusChannel
 
 		public string EndpointStatusInformatieService { get; set; }
 
+		// Not relevant for regular WUS clients
+		//public string EndpointAfleverService { get; set; }
+
+		public string EndpointOphaalService { get; set; }
+
+
 		public string AuspService { get; set; }
 
 		public X509Certificate2 ServerCertificate { get; set; }
